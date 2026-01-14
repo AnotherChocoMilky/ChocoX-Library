@@ -101,7 +101,7 @@ async function loadRepos() {
         const icon = data.iconURL || first.iconURL || "";
         const name = data.name || first.name || "Unnamed Repo";
         const desc = data.description || first.subtitle || first.localizedDescription || "";
-
+        
         out += `
           <div class="repo-card" data-url="${repo.url}">
             <img src="${icon}" alt="">
@@ -111,6 +111,7 @@ async function loadRepos() {
             </div>
             <div class="repo-actions">
               <button class="openBtn" data-url="${repo.url}">Open</button>
+              <button class="copyBtn" data-url="${repo.url}">Copy URL</button>
             </div>
           </div>
         `;
