@@ -83,7 +83,7 @@ async function loadRepos() {
 
   try {
     // Fetch global repos JSON
-    const res = await fetch("/back/global-repos.json");
+    const res = await fetch("/chocomilky-revived/back/global-repos.json");
     const globals = await res.json();
 
     if (!globals.repos || globals.repos.length === 0) {
