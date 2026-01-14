@@ -14,9 +14,6 @@ body{margin:0;background:var(--bg);color:var(--text);display:flex;flex-direction
 header{padding:28px 20px;text-align:center}
 h1{margin:0;font-size:22px;font-weight:600}
 #container{max-width:1100px;margin:0 auto;padding:12px 20px 40px}
-#importRepo{width:100%;max-width:800px;margin:0 auto 18px;display:flex;gap:8px;justify-content:center}
-#importRepo input{flex:1;padding:12px;border-radius:14px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.03);color:var(--text);min-width:0}
-#importRepo button{padding:12px 16px;border-radius:14px;background:var(--accent);color:#fff;border:0;cursor:pointer;font-weight:600}
 #repos{display:flex;flex-direction:column;gap:12px;margin:18px auto;max-width:800px}
 .repo-section-title{color:var(--subtle);font-weight:700;margin-top:8px;margin-bottom:6px}
 .repo-card{display:flex;align-items:center;gap:12px;background:var(--card);padding:12px;border-radius:14px;box-shadow:var(--shadow);flex-wrap:wrap}
@@ -45,12 +42,8 @@ footer{text-align:center;color:var(--subtle);padding:18px 0;margin-top:auto}
 </style>
 </head>
 <body>
-<header><h1>Choco Milky IPA Library V2</h1></header>
+<header><h1>Choco Milky IPA Library V2 - revived</h1></header>
 <div id="container">
-  <div id="importRepo">
-    <input id="importInput" type="url" placeholder="Paste repo URL here (.json, .php, or domain)">
-    <button id="importBtn">Import</button>
-  </div>
 
   <div id="repos"></div>
 
@@ -62,14 +55,11 @@ footer{text-align:center;color:var(--subtle);padding:18px 0;margin-top:auto}
 </div>
 
 <div id="toast"></div>
-<footer>© 2025 Choco Milky IPA Library V2</footer>
+<footer>© 2026 Choco Milky IPA Library V2 - revived by @gablilli</footer>
 
 <script>
 const reposArea = document.getElementById('repos');
 const appsArea = document.getElementById('apps');
-const importRepoBox = document.getElementById('importRepo');
-const importInput = document.getElementById('importInput');
-const importBtn = document.getElementById('importBtn');
 const backBtn = document.getElementById('backBtn');
 const searchBar = document.getElementById('searchBar');
 const searchInput = document.getElementById('searchInput');
@@ -92,43 +82,49 @@ async function loadRepos() {
   reposArea.innerHTML = `<div class="loading-line">Loading libraries…</div>`;
 
   try {
-    const res = await fetch("/api/repos");
-    const data = await res.json();
+    // Fetch global repos JSON
+    const res = await fetch("/back/global-repos.json");
+    const globals = await res.json();
 
-    if (!Array.isArray(data) || data.length === 0) {
+    if (!globals.repos || globals.repos.length === 0) {
       reposArea.innerHTML = `<div class="loading-line">No libraries loaded.</div>`;
       return;
     }
 
     let out = "";
-    data.forEach(repo => {
-      const r = repo.data;
-      const first = (r.apps && r.apps[0]) || {};
-      const icon = r.iconURL || first.iconURL || "";
-      const name = r.name || first.name || "Unnamed Repo";
-      const desc = r.description || first.subtitle || first.localizedDescription || "";
+    for (const repo of globals.repos) {
+      try {
+        const r = await fetch(repo.url);
+        const data = await r.json();
 
-      out += `
-        <div class="repo-card" data-url="${repo.url}">
-          <img src="${icon}" alt="">
-          <div class="repo-info">
-            <div class="repo-name">${name}</div>
-            <div class="repo-desc">${desc}</div>
+        const first = (data.apps && data.apps[0]) || {};
+        const icon = data.iconURL || first.iconURL || "";
+        const name = data.name || first.name || "Unnamed Repo";
+        const desc = data.description || first.subtitle || first.localizedDescription || "";
+
+        out += `
+          <div class="repo-card" data-url="${repo.url}">
+            <img src="${icon}" alt="">
+            <div class="repo-info">
+              <div class="repo-name">${name}</div>
+              <div class="repo-desc">${desc}</div>
+            </div>
+            <div class="repo-actions">
+              <button class="openBtn" data-url="${repo.url}">Open</button>
+            </div>
           </div>
-          <div class="repo-actions">
-            <button class="openBtn" data-url="${repo.url}">Open</button>
-            <button class="copyBtn" data-url="${repo.url}">Copy URL</button>
-          </div>
-        </div>
-      `;
-    });
+        `;
+      } catch (e) {
+        console.warn("Failed to load repo:", repo.url);
+      }
+    }
 
     reposArea.innerHTML = out;
     attachRepoHandlers();
 
   } catch (err) {
     console.error(err);
-    reposArea.innerHTML = `<div class="loading-line">Failed to load repos.</div>`;
+    reposArea.innerHTML = `<div class="loading-line">Failed to load libraries.</div>`;
   }
 }
 
@@ -152,17 +148,14 @@ async function openRepo(url) {
   viewingRepoUrl = url;
   window.scrollTo({ top: 0, behavior: "auto" });
   reposArea.style.display = "none";
-  importRepoBox.style.display = "none";
   backBtn.style.display = "block";
   searchBar.style.display = "flex";
   appsArea.innerHTML = `<div class="loading-line">Loading apps…</div>`;
 
   try {
-    const res = await fetch("/api/repos");
-    const all = await res.json();
-    const repo = all.find(r => r.url === url);
-    if (!repo) throw new Error("Repo not found");
-    const apps = repo.data.apps || [];
+    const res = await fetch(url);
+    const repo = await res.json();
+    const apps = repo.apps || [];
     currentApps = apps;
     renderApps(apps);
   } catch (e) {
@@ -199,7 +192,6 @@ backBtn.addEventListener("click", () => {
   viewingRepoUrl = null;
   appsArea.innerHTML = "";
   reposArea.style.display = "";
-  importRepoBox.style.display = "";
   backBtn.style.display = "none";
   searchBar.style.display = "none";
   window.scrollTo({ top: 0, behavior: "auto" });
@@ -216,32 +208,6 @@ searchInput.addEventListener("input", () => {
     return fields.some(f => f && f.toLowerCase().includes(q));
   });
   renderApps(filtered);
-});
-
-// =======================================================
-// ADDED: USER REPO IMPORT SUPPORT
-// =======================================================
-importBtn.addEventListener("click", async () => {
-  const url = importInput.value.trim();
-  if (!url) return showToast("Enter a repo URL");
-
-  try {
-    const res = await fetch("/api/import", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url })
-    });
-
-    const data = await res.json();
-    if (!res.ok) return showToast(data.error || "Import failed");
-
-    showToast("Repo added!");
-    importInput.value = "";
-    loadRepos();
-  } catch (e) {
-    console.error(e);
-    showToast("Import failed");
-  }
 });
 
 // =======================================================
