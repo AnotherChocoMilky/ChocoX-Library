@@ -38,7 +38,6 @@
     { "url": "https://qnblackcat.github.io/AltStore/apps.json" },
     { "url": "https://raw.githubusercontent.com/swaggyP36000/TrollStore-IPAs/main/apps_esign.json" },
     { "url": "https://raw.githubusercontent.com/Gliddd4/gliddd4-repo/refs/heads/main/app.json" },
-    { "url": "https://repo.chungchi365.com/repo.json", "useProxy": true },
     { "url": "https://therealfoxster.github.io/altsource/apps.json" },
     { "url": "https://raw.githubusercontent.com/titouan336/Spotify-AltStoreRepo-mirror/refs/heads/main/source.json" }
   ]
