@@ -7,7 +7,6 @@
 
   <style>
     :root {
-      /* KEEPING YOUR EXACT COLORS */
       --bg: #0d0d0f;
       --card: rgba(28,28,32,0.85);
       --accent: #0a84ff;
@@ -16,10 +15,9 @@
       --radius: 18px;
       --shadow: 0 8px 24px rgba(0,0,0,0.4);
 
-      /* iOS-y polish (no palette change) */
       --stroke: rgba(255,255,255,0.08);
       --stroke2: rgba(255,255,255,0.06);
-      --card2: rgba(28,28,32,0.72); /* same family as --card, slightly more glassy */
+      --card2: rgba(28,28,32,0.72);
       --ease: cubic-bezier(.2,.8,.2,1);
 
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -40,7 +38,6 @@
       text-rendering: optimizeLegibility;
     }
 
-    /* subtle background texture (doesn't change color, just depth) */
     body::before{
       content:"";
       position: fixed;
@@ -57,7 +54,6 @@
       padding: calc(env(safe-area-inset-top) + 18px) 20px 18px;
       text-align: center;
 
-      /* iOS nav-like blur without changing color palette */
       position: sticky;
       top: 0;
       z-index: 50;
@@ -81,7 +77,7 @@
       width: 100%;
     }
 
-    /* ---------- iOS-ish animations (subtle) ---------- */
+    /* ---------- Animations (subtle) ---------- */
     @media (prefers-reduced-motion: no-preference) {
       .repo-card, .card, #backBtn, #importModal .box, #toast {
         transition:
@@ -107,7 +103,7 @@
       }
     }
 
-    /* ---------- Section headers (new, but layout stays same) ---------- */
+    /* ---------- Section headers ---------- */
     .repo-section-title{
       max-width: 800px;
       margin: 18px auto 8px;
@@ -144,7 +140,6 @@
       align-items: center;
       gap: 12px;
 
-      /* iOS-ish glass but SAME COLORS */
       background: linear-gradient(180deg, rgba(28,28,32,0.90), rgba(28,28,32,0.78));
       border: 1px solid var(--stroke2);
 
