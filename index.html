@@ -628,7 +628,7 @@
       updateSectionTitles();
 
       try {
-        const res = await fetch("https://gablilli.github.io/chocomilkyX/back/global-repos.json");
+        const res = await fetch("https://choco-x.vercel.app/back/global-repos.json");
         const globals = await res.json();
         if (!globals.repos || globals.repos.length === 0) {
           defaultReposArea.innerHTML = `<div class="loading-line">No libraries loaded.</div>`;
