@@ -8,13 +8,13 @@
   <img src="static/icons/logo1024x1024.png" alt="Choco MilkyX Logo" width="200"/>
 </p>
 
-<h1 align="center">chocomilkyX Library</h1>
+<h1 align="center">ChocoX Library</h1>
 
 
 <p align="center">
-  The chocomilkyX library is a simple static web project for downloading IPAs from your favourite repos.<br/>
-  The project is designed to be lightweight, easy to customize, and ready for GitHub Pages.<br/>
-  Your favourite library, with the repos you need, all in one place.
+  The ChocoX Library project is a simple static web project for downloading IPAs from your favorite repos.<br/>
+  The project is designed to be a lightweight, easy to customize repo importer.<br/>
+  This is a fork of chocomilkyX by @gablili on GitHub, where his project was a fork of my original project.
 </p>
 
 <p align="center">
@@ -27,7 +27,6 @@
 ## ✨ features
 
 - static html webpage  
-- ready for github pages  
 - minimal and lightweight  
 - personal repos import
 
@@ -75,13 +74,13 @@ npx http-server .
 ```
 
 ---
-## about chocomilkyv2
-ChocoMilkyV2 was the original version of this project, created by chocomilky.  
-chocomilkyX continues and updates it with new features, improvements, and bug fixes, while making the library free and opensource.
-This project is a **revived version**, maintaining compatibility with the original repos and adding enhancements.
+## about chocomilkyX
+chocomilkyX was the forked version of the original project, created by gablili.  
+ChocoX Library is a remade version of their fork, with a brand new UI, more repos, and more customizabilty, and updates it with new features, improvements, and bug fixes, while making the library free and opensource.
+This project is a **remake of gablili's fork**, maintaining compatibility with the original repos and adding enhancements.
 
 > [!WARNING]  
-> chocomilkyX **does not host any IPA files**.  
+> ChocoX **does not host any IPA files**.  
 >All downloadable files are provided by the original repositories.  
 >This project simply accesses to them.
 >Users are responsible for complying with the terms and conditions of the original sources.
