@@ -79,6 +79,7 @@ This project is based on **chocomilkyX** by **@gablili**, which itself was a for
 > **ChocoX does not host any IPA files.**
 > All downloadable files are provided by third-party repositories.
 > You are responsible for complying with the terms and conditions of the original sources.
+> If you copy this project and/or rebrand it, legal action may be taken.
 
 ---
 
