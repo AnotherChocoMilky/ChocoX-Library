@@ -1,6 +1,6 @@
 {
   "repos": [
-    { "url": "https://repository.apptesters.org/" },
+    { "url": "https://ipa-files-library.vercel.app/repo.json" },
     { "url": "https://raw.githubusercontent.com/WhySooooFurious/Ultimate-Sideloading-Guide/refs/heads/main/raw-files/app-repo.json" },
     { "url": "https://esign.yyyue.xyz/app.json", "useProxy": true },
     { "url": "https://raw.githubusercontent.com/vizunchik/AltStoreRus/master/apps.json" },
