@@ -1,7 +1,7 @@
 <p align="center">
-  <img src="https://img.shields.io/github/stars/gablilli/chocomilkyX?style=for-the-badge" alt="GitHub stars" />
-  <img src="https://img.shields.io/github/forks/gablilli/chocomilkyX?style=for-the-badge" alt="GitHub forks" />
-  <img src="https://img.shields.io/github/issues-pr/gablilli/chocomilkyX?style=for-the-badge" alt="Open PRs" />
+  <img src="https://img.shields.io/github/stars/AnotherChocoMilky/ChocoX-Library?style=for-the-badge" alt="GitHub stars" />
+  <img src="https://img.shields.io/github/forks/AnotherChocoMilky/ChocoX-Library?style=for-the-badge" alt="GitHub forks" />
+  <img src="https://img.shields.io/github/issues-pr/AnotherChocoMilky/ChocoX-Library?style=for-the-badge" alt="Open PRs" />
 </p>
 
 <p align="center">
