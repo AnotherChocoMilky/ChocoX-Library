@@ -12,11 +12,11 @@
 
 <p align="center">
   A lightweight static web app for browsing and downloading IPAs from your favorite repositories.<br />
-  Easy to self-host, easy to customize, and simple to extend with more repos.
+  Easy to customize, and simple to extend with more repos.
 </p>
 
 <p align="center">
-  <strong>Live:</strong> <a href="https://choco-x.vercel.app">ChocoX</a>
+  <strong>Live:</strong> <a href="https://choco-x.vercel.app">Visit ChocoX</a>
 </p>
 
 ---
@@ -51,24 +51,6 @@ Add an entry like this to the repos JSON file:
 
 ---
 
-## Self-hosting / Getting started
-
-### Clone the repository
-
-```bash
-git clone https://github.com/AnotherChocoMilky/ChocoX-Library.git
-cd ChocoX-Library
-```
-
-### Run locally
-
-You can open `index.html` directly in your browser, but using a local server is recommended:
-
-```bash
-npx http-server .
-```
-
----
 
 ## Background
 
