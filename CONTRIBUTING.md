@@ -1,4 +1,4 @@
-# contributing to chocomilkyx
+# contributing to ChocoX
 
 hey! thanks for wanting to contribute 🍫  
 whether you want to add new repos or help improve the project, this guide will help you get started.
@@ -7,7 +7,7 @@ whether you want to add new repos or help improve the project, this guide will h
 
 ## adding a new repo
 
-to add a repo to chocomilkyx:
+to add a repo to ChocoX:
 
 1. fork this repository  
 2. open the `back/global-repos.json` file  
@@ -66,4 +66,4 @@ chore: update badges
 
 ---
 
-thanks again for helping make chocomilkyx better! 🚀
+thanks again for helping make ChocoX better! 🚀
