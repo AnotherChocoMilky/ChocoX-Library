@@ -1,49 +1,46 @@
 <p align="center">
   <img src="https://img.shields.io/github/stars/AnotherChocoMilky/ChocoX-Library?style=for-the-badge" alt="GitHub stars" />
   <img src="https://img.shields.io/github/forks/AnotherChocoMilky/ChocoX-Library?style=for-the-badge" alt="GitHub forks" />
-  <img src="https://img.shields.io/github/issues-pr/AnotherChocoMilky/ChocoX-Library?style=for-the-badge" alt="Open PRs" />
+  <img src="https://img.shields.io/github/issues-pr/AnotherChocoMilky/ChocoX-Library?style=for-the-badge" alt="Open pull requests" />
 </p>
 
 <p align="center">
-  <img src="static/icons/logo1024x1024.png" alt="Choco MilkyX Logo" width="200"/>
+  <img src="static/icons/logo1024x1024.png" alt="ChocoX Library logo" width="200" />
 </p>
 
 <h1 align="center">ChocoX Library</h1>
 
-
 <p align="center">
-  The ChocoX Library project is a simple static web project for downloading IPAs from your favorite repos.<br/>
-  The project is designed to be a lightweight, easy to customize repo importer.<br/>
-  This is a fork of chocomilkyX by @gablili on GitHub, where his project was a fork of my original project.
+  A lightweight static web app for browsing and downloading IPAs from your favorite repositories.<br />
+  Easy to self-host, easy to customize, and simple to extend with more repos.
 </p>
 
 <p align="center">
-  🔗 <strong>Live:</strong> <a href="(https://choco-x.vercel.app)](https://choco-x.vercel.app)">https://choco-x.vercel.app</a>
+  <strong>Live:</strong> <a href="https://choco-x.vercel.app">https://choco-x.vercel.app</a>
 </p>
-
 
 ---
 
-## ✨ features
+## Features
 
-- static html webpage  
-- minimal and lightweight  
-- personal repos import
+- Static HTML web app
+- Minimal and lightweight
+- Import personal repositories
 
-## contribute to the project
+---
 
-want to add repos to the library?
-first of all, thank you!
-to proceed:
+## Contributing (adding repos)
 
-1. fork this repository
-2. add your repo as a string (see example below)
-3. commit your changes
-4. open a pull request
+Want to add a repo to the library? Thanks.
 
-### example
+1. Fork this repository
+2. Add your repo to the repos JSON file (see example below)
+3. Commit your changes
+4. Open a pull request
 
-add an entry like this to the repos json file:
+### Example
+
+Add an entry like this to the repos JSON file:
 
 ```json
 {
@@ -51,43 +48,40 @@ add an entry like this to the repos json file:
 }
 ```
 
-that’s it 🍫
 
-for other contributions, see the contributing file.  
+---
 
-## selfhost it - 🚀 getting started
+## Self-hosting / Getting started
 
-### clone the repository
+### Clone the repository
 
 ```bash
-git clone https://github.com/gablilli/chocomilkyX.git
-cd chocomilkyX
-````
+git clone https://github.com/AnotherChocoMilky/ChocoX-Library.git
+cd ChocoX-Library
+```
 
-### run locally
+### Run locally
 
-open `index.html` directly in your browser
-or use a local server (recommended):
+You can open `index.html` directly in your browser, but using a local server is recommended:
 
 ```bash
 npx http-server .
 ```
 
 ---
-## about chocomilkyX
-chocomilkyX was the forked version of the original project, created by gablili.  
-ChocoX Library is a remade version of their fork, with a brand new UI, more repos, and more customizabilty, and updates it with new features, improvements, and bug fixes, while making the library free and opensource.
-This project is a **remake of gablili's fork**, maintaining compatibility with the original repos and adding enhancements.
 
-> [!WARNING]  
-> ChocoX **does not host any IPA files**.  
->All downloadable files are provided by the original repositories.  
->This project simply accesses to them.
->Users are responsible for complying with the terms and conditions of the original sources.
+## Background
 
-## 📄 license
+This project is based on **chocomilkyX** by **@gablili**, which itself was a fork of **my** original project.  
+**ChocoX Library** refreshes the UI, added repos, improves customization, and continues development while maintaining compatibility with existing repo formats.
 
-this project is licensed under the **gpl v3 license**.
-see the `license` file for details.
+> [!WARNING]
+> **ChocoX does not host any IPA files.**
+> All downloadable files are provided by third-party repositories.
+> You are responsible for complying with the terms and conditions of the original sources.
 
+---
 
+## License
+
+Licensed under the **GPL-3.0**. See the `LICENSE` file for details.
