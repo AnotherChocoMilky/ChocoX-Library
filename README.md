@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <strong>Live:</strong> <a href="https://choco-x.vercel.app">https://choco-x.vercel.app</a>
+  <strong>Live:</strong> <a href="https://choco-x.vercel.app">ChocoX</a>
 </p>
 
 ---
