@@ -1,69 +1,70 @@
-# contributing to ChocoX
+# Contributing to ChocoX
 
-hey! thanks for wanting to contribute 🍫  
-whether you want to add new repos or help improve the project, this guide will help you get started.
+Hey! Thanks for wanting to contribute 🍫  
+Whether you want to add new repos or help improve the project, this guide will help you get started.
 
 ---
 
-## adding a new repo
+## Adding a new repo
 
-to add a repo to ChocoX:
+To add a repo to ChocoX:
 
-1. fork this repository  
-2. open the `back/global-repos.json` file  
-3. add a new entry like this:
+1. Fork this repository  
+2. Open `back/global-repos.json`  
+3. Add a new entry like this:
 
 ```json
 {
   "url": "https://example.com/repo.json"
 }
-````
+```
 
-4. commit your changes
-5. open a pull request
+4. Commit your changes  
+5. Open a pull request  
 
-tips:
+### Tips
 
-* make sure your url points to a valid json file with the right structure
-* only submit repos you have the right to share
-* keep your pr descriptive so it's easy to review
+- Make sure your URL points to a valid JSON file with the expected structure
+- Only submit repos you have the right to share
+- Keep your PR description clear so it’s easy to review
 
 ---
 
-## commit messages
+## Commit messages
 
-we like to keep commit messages simple and clear. a small convention we follow:
+Keep commit messages simple and descriptive. Convention:
 
-* **feat:** a new feature or adding a repo
-* **fix:** fixing a bug or typo
-* **chore:** maintenance, formatting, small tweaks
-* **docs:** updating documentation
-* **refactor:** cleaning up code without adding features
+- **feat:** new feature (including adding a repo)
+- **fix:** bug fix or typo fix
+- **chore:** maintenance, formatting, small tweaks
+- **docs:** documentation updates
+- **refactor:** code cleanup without behavior changes
 
-examples:
+### Examples
 
-```
-feat: add example repo to repos.json
-fix: correct url for existing repo
+```txt
+feat: add example repo to global-repos.json
+fix: correct URL for existing repo
+docs: update contributing guide
 chore: update badges
 ```
 
 ---
 
-## code style & guidelines
+## Code style & guidelines
 
-* keep json entries valid and formatted
-* respect the lightweight, minimal spirit of the project
-* don't break the static site or github pages deployment
-
----
-
-## review process
-
-* your pull request will be checked by the maintainers
-* once approved, it will be merged into main
-* be ready to respond to feedback or tweak things if needed
+- Keep JSON valid and consistently formatted
+- Respect the lightweight/minimal spirit of the project
+- Don’t break the static site build or deployment (GitHub Pages/Vercel/etc.)
 
 ---
 
-thanks again for helping make ChocoX better! 🚀
+## Review process
+
+- Maintainers will review your pull request
+- If changes are requested, please update your PR
+- Once approved, it will be merged into `main`
+
+---
+
+Thanks again for helping improve ChocoX! 🚀
