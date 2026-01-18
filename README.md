@@ -18,7 +18,7 @@
 </p>
 
 <p align="center">
-  🔗 <strong>Live:</strong> <a href="https://gablilli.github.io/chocomilkyX/">https://gablilli.github.io/chocomilkyX/</a>
+  🔗 <strong>Live:</strong> <a href="(https://choco-x.vercel.app)](https://choco-x.vercel.app)">https://choco-x.vercel.app</a>
 </p>
 
 
