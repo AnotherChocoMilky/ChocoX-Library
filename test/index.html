@@ -1,1 +1,1046 @@
-ah
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1, viewport-fit=cover" />
+  <title>ChocoX IPA Library</title>
+
+  <style>
+    :root {
+      --bg: #0d0d0f;
+      --card: rgba(28,28,32,0.85);
+      --accent: #0a84ff;
+      --text: #f5f5f7;
+      --subtle: #9ca3af;
+      --radius: 18px;
+      --shadow: 0 8px 24px rgba(0,0,0,0.4);
+
+      --stroke: rgba(255,255,255,0.08);
+      --stroke2: rgba(255,255,255,0.06);
+      --card2: rgba(28,28,32,0.72);
+      --ease: cubic-bezier(.2,.8,.2,1);
+
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color-scheme: dark;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    body::before{
+      content:"";
+      position: fixed;
+      inset: 0;
+      pointer-events:none;
+      background:
+        radial-gradient(900px 360px at 20% -10%, rgba(10,132,255,.14), transparent 55%),
+        radial-gradient(800px 340px at 90% 0%, rgba(255,255,255,.06), transparent 60%);
+      opacity:.9;
+      z-index:-1;
+    }
+
+    header {
+      padding: calc(env(safe-area-inset-top) + 18px) 20px 18px;
+      text-align: center;
+
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      background: rgba(13,13,15,0.55);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    #container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 12px 20px 40px;
+      width: 100%;
+    }
+
+    /* ---------- Animations (subtle) ---------- */
+    @media (prefers-reduced-motion: no-preference) {
+      .repo-card, .card, #backBtn, #importModal .box, #toast {
+        transition:
+          transform .22s var(--ease),
+          box-shadow .22s var(--ease),
+          background-color .22s var(--ease),
+          border-color .22s var(--ease),
+          opacity .22s var(--ease);
+        will-change: transform;
+      }
+
+      .repo-card:active, .card:active, .repo-actions button:active, .download:active, #backBtn:active, #searchBar button#importBtn:active {
+        transform: scale(0.985);
+      }
+
+      .fade-in {
+        animation: fadeInUp .32s var(--ease) both;
+      }
+
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    }
+
+    /* ---------- Section headers ---------- */
+    .repo-section-title{
+      max-width: 800px;
+      margin: 18px auto 8px;
+      padding: 0 4px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+    }
+    .repo-section-title .label{
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .02em;
+      color: rgba(245,245,247,0.92);
+    }
+    .repo-section-title .hint{
+      font-size: 12px;
+      color: var(--subtle);
+      white-space: nowrap;
+      opacity: .9;
+    }
+
+    /* repo cards */
+    #repos {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 10px auto 18px;
+      max-width: 800px;
+    }
+
+    .repo-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+
+      background: linear-gradient(180deg, rgba(28,28,32,0.90), rgba(28,28,32,0.78));
+      border: 1px solid var(--stroke2);
+
+      /* Bigger repo cards */
+      padding: 16px;
+      border-radius: 16px;
+
+      box-shadow: var(--shadow);
+      flex-wrap: wrap;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+
+      justify-content: space-between;
+    }
+
+    .repo-card:hover{
+      border-color: var(--stroke);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.48);
+    }
+
+    .repo-card img {
+      /* Bigger icon to match bigger cards */
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      object-fit: cover;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .repo-info {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .repo-name {
+      font-weight: 900;
+      letter-spacing: -0.01em;
+      font-size: 16px; /* slightly bigger */
+      line-height: 1.15;
+    }
+
+    .repo-desc {
+      color: var(--subtle);
+      font-size: 14px; /* slightly bigger */
+      margin-top: 6px;
+      line-height: 1.3;
+    }
+
+    .repo-actions {
+      display: flex;
+      gap: 8px;
+
+      flex: 0 0 auto;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .repo-actions button {
+      padding: 9px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: var(--accent);
+      color: #fff;
+      cursor: pointer;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+
+      flex: 0 0 auto;
+      white-space: nowrap;
+    }
+
+    .repo-actions button.copyBtn{
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.10);
+      box-shadow: none;
+    }
+
+    .repo-actions button.removeBtn{
+      background: rgba(255,69,58,0.22);
+      border: 1px solid rgba(255,69,58,0.22);
+      box-shadow: none;
+    }
+
+    /* Search bar */
+    #searchBar {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      margin: 14px auto;
+      max-width: 720px; /* a bit wider */
+      gap: 10px;
+    }
+
+    #searchBar input {
+      flex: 1;
+      /* Bigger search input */
+      padding: 14px 14px;
+      height: 50px;
+      font-size: 16px;
+
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      outline: none;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.22);
+      transition: border-color .22s var(--ease), background-color .22s var(--ease);
+    }
+
+    #searchBar input:focus{
+      border-color: rgba(10,132,255,0.45);
+      background: rgba(255,255,255,0.05);
+    }
+
+    /* Plus button: circle + bigger */
+    #searchBar button#importBtn {
+      width: 50px;
+      height: 50px;
+      padding: 0;
+      border-radius: 999px;
+
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      border: 1px solid rgba(255,255,255,0.10);
+      background: var(--accent);
+      color: #fff;
+      font-weight: 900;
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      box-shadow: 0 10px 22px rgba(10,132,255,0.16);
+    }
+
+    /* apps */
+    #apps {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 18px;
+      padding: 18px;
+      flex: 1;
+      max-width: 1100px;
+      margin: 18px auto;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(28,28,32,0.90), rgba(28,28,32,0.78));
+      border: 1px solid var(--stroke2);
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .card:hover{
+      border-color: var(--stroke);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.48);
+      transform: translateY(-1px);
+    }
+
+    .icon img {
+      width: 72px;
+      height: 72px;
+      border-radius: 14px;
+      object-fit: cover;
+      margin-bottom: 12px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .title {
+      font-weight: 800;
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
+    }
+
+    .subtitle {
+      color: var(--subtle);
+      font-size: 13px;
+      margin-bottom: 8px;
+      line-height: 1.25;
+    }
+
+    .meta {
+      display: flex;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--subtle);
+      margin-bottom: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .meta .version,
+    .meta .size {
+      font-weight: 700;
+      margin-bottom: 0;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .card .repo-meta {
+      font-size: 12px;
+      color: var(--subtle);
+      font-weight: 600;
+      margin-top: 2px;
+      opacity: .95;
+    }
+
+    /* NEW: developer line when viewing/opening repo */
+    .card .dev-meta{
+      font-size: 12px;
+      color: rgba(245,245,247,0.78);
+      font-weight: 650;
+      margin-top: 4px;
+      margin-bottom: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .download {
+      display: inline-block;
+      padding: 10px 14px;
+      border-radius: 14px;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 900;
+      letter-spacing: -0.01em;
+      border: 1px solid rgba(255,255,255,0.10);
+      box-shadow: 0 10px 22px rgba(10,132,255,0.14);
+    }
+
+    #backBtn {
+      display: none;
+      margin: 8px auto;
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.10);
+      padding: 10px 16px;
+      border-radius: 14px;
+      cursor: pointer;
+      font-weight: 900;
+      letter-spacing: -0.01em;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    #toast {
+      position: fixed;
+      top: calc(env(safe-area-inset-top) + 18px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.78);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 12px;
+      display: none;
+      z-index: 9999;
+      border: 1px solid rgba(255,255,255,0.10);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.35);
+
+      max-width: calc(100vw - 24px);
+      width: max-content;
+      text-align: center;
+    }
+
+    .loading-line {
+      color: #999;
+      text-align: center;
+      padding: 14px;
+    }
+
+    .skeleton {
+      background: rgba(255,255,255,0.05);
+      height: 100px;
+      border-radius: 16px;
+      animation: pulse 1.2s infinite;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    /* import */
+    #importModal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background: rgba(0,0,0,0.55);
+      z-index: 10000;
+    }
+
+    #importModal .box {
+      background: linear-gradient(180deg, rgba(28,28,32,0.92), rgba(28,28,32,0.80));
+      padding: 22px;
+      border-radius: 18px;
+      width: min(90%, 420px);
+      box-shadow: var(--shadow);
+      display: flex;
+      gap: 12px;
+      border: 1px solid rgba(255,255,255,0.10);
+      transform-origin: center;
+    }
+
+    #importModal input {
+      flex: 1;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      outline: none;
+    }
+
+    #importModal input:focus{
+      border-color: rgba(10,132,255,0.45);
+    }
+
+    #importModal button {
+      padding: 12px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: var(--accent);
+      color: #fff;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 10px 22px rgba(10,132,255,0.14);
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.5; }
+      50% { opacity: 1; }
+      100% { opacity: 0.5; }
+    }
+
+    footer {
+      text-align: center;
+      color: var(--subtle);
+      padding: 18px 0 calc(env(safe-area-inset-bottom) + 18px);
+      margin-top: auto;
+    }
+
+    /* mobile */
+    @media (max-width: 640px) {
+      .repo-card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .repo-actions {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      #searchBar {
+        flex-direction: column;
+        max-width: 100%;
+      }
+      #searchBar button#importBtn {
+        width: 100%;
+        border-radius: 16px; /* keep circle on desktop; nicer full-width on mobile */
+      }
+
+      #apps {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 12px;
+        padding: 12px;
+      }
+
+      .card { padding: 12px; }
+
+      .icon img {
+        width: 56px;
+        height: 56px;
+        margin-bottom: 8px;
+      }
+
+      .title { font-size: 14px; }
+      .subtitle { font-size: 11px; margin-bottom: 6px; }
+
+      .meta {
+        font-size: 11px;
+        gap: 6px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 8px;
+      }
+
+      .download {
+        font-size: 12px;
+        padding: 8px 10px;
+      }
+    }
+
+    /* repos sections */
+    #userRepos, #defaultRepos {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 10px auto 18px;
+      max-width: 800px;
+    }
+  </style>
+</head>
+
+<body>
+  <header><h1>ChocoX IPA Library</h1></header>
+
+  <div id="container">
+    <div id="searchBar">
+      <input id="searchInput" type="text" placeholder="Search apps…">
+      <button id="importBtn" title="Import Personal Repo">+</button>
+    </div>
+
+    <div class="repo-section-title" id="userReposTitle" style="display:none;">
+      <div class="label">User Repos</div>
+      <div class="hint">Imported</div>
+    </div>
+    <div id="userRepos"></div>
+
+    <div class="repo-section-title" id="defaultReposTitle" style="display:none;">
+      <div class="label">Default Repos</div>
+      <div class="hint">Global</div>
+    </div>
+    <div id="defaultRepos"></div>
+
+    <button id="backBtn">← Back to Libraries</button>
+    <div id="apps"></div>
+  </div>
+
+  <div id="toast"></div>
+
+  <footer>© 2026 ChocoX IPA Library - made with ❤️ by @gablilli and @AnotherChocoMilky on GitHub</footer>
+
+  <script>
+    const appsArea = document.getElementById('apps');
+    const backBtn = document.getElementById('backBtn');
+    const searchBar = document.getElementById('searchBar');
+    const searchInput = document.getElementById('searchInput');
+    const toast = document.getElementById('toast');
+    const importBtn = document.getElementById("importBtn");
+
+    const userReposTitle = document.getElementById("userReposTitle");
+    const defaultReposTitle = document.getElementById("defaultReposTitle");
+    const userReposArea = document.getElementById("userRepos");
+    const defaultReposArea = document.getElementById("defaultRepos");
+
+    let currentApps = [];
+    let viewingRepoUrl = null;
+    let viewingRepoName = null; // NEW: used to show developer name line only when viewing/opening repo
+    let allAppsIndex = [];
+    let filteredApps = [];
+    let loaded = 0;
+    const proxy = "https://proxy-sooty-ten-88.vercel.app/api/proxy?url=";
+
+    function showToast(msg, ms = 1500) {
+      toast.textContent = msg;
+      toast.style.display = 'block';
+      toast.classList.add("fade-in");
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => (toast.style.display = 'none'), ms);
+    }
+
+    const fetchRepo = async (repo) => {
+      const url = repo.useProxy ? proxy + encodeURIComponent(repo.url) : repo.url;
+      try {
+        const r = await fetch(url);
+        return await r.json();
+      } catch { return null; }
+    };
+
+    const loadAllRepos = async (repos) => {
+      const results = await Promise.all(repos.map(fetchRepo));
+      return results.filter(r => r);
+    };
+
+    function updateSectionTitles(){
+      userReposTitle.style.display = userReposArea.childElementCount ? "" : "none";
+      defaultReposTitle.style.display = defaultReposArea.childElementCount ? "" : "none";
+    }
+
+    async function loadRepos() {
+      defaultReposArea.innerHTML = `<div class="loading-line">Loading libraries…</div>`;
+      userReposArea.innerHTML = ``;
+      updateSectionTitles();
+
+      try {
+        const res = await fetch("https://choco-x.vercel.app/back/global-repos.json");
+        const globals = await res.json();
+        if (!globals.repos || globals.repos.length === 0) {
+          defaultReposArea.innerHTML = `<div class="loading-line">No libraries loaded.</div>`;
+          updateSectionTitles();
+          return;
+        }
+
+        const reposData = await loadAllRepos(globals.repos);
+
+        allAppsIndex = [];
+        reposData.forEach(indexRepoApps);
+
+        currentApps = allAppsIndex.slice();
+        filteredApps = currentApps.slice();
+        loaded = 0;
+
+        let out = "";
+        for (let i = 0; i < reposData.length; i++) {
+          const data = reposData[i];
+          const repoMeta = globals.repos[i];
+          const first = (data.apps && data.apps[0]) || {};
+          const icon = data.iconURL || first.iconURL || "";
+          const name = data.name || first.name || "Unnamed Repo";
+          const desc = data.description || first.subtitle || first.localizedDescription || "";
+          out += `
+            <div class="repo-card fade-in" data-url="${repoMeta.url}">
+              <img src="${icon}" alt="">
+              <div class="repo-info">
+                <div class="repo-name">${name}</div>
+                <div class="repo-desc">${desc}</div>
+              </div>
+              <div class="repo-actions">
+                <button class="openBtn" data-url="${repoMeta.url}" data-use-proxy="${repoMeta.useProxy || false}">Open</button>
+                <button class="copyBtn" data-url="${repoMeta.url}">Copy URL</button>
+              </div>
+            </div>
+          `;
+        }
+
+        defaultReposArea.innerHTML = out;
+        updateSectionTitles();
+        searchBar.style.display = "flex";
+      } catch {
+        defaultReposArea.innerHTML = `<div class="loading-line">Failed to load libraries.</div>`;
+        updateSectionTitles();
+      }
+    }
+
+    function getUserRepos(){return JSON.parse(localStorage.getItem("userRepos")||"[]")}
+    function saveUserRepo(r){
+      const x=getUserRepos();
+      if(!x.find(e=>e.url===r.url)){x.push(r);localStorage.setItem("userRepos",JSON.stringify(x))}
+    }
+    function removeUserRepo(url){
+      localStorage.setItem("userRepos",JSON.stringify(getUserRepos().filter(r=>r.url!==url)))
+    }
+
+    async function fetchUserRepo(url,useProxy=false){
+      try{
+        const fetchUrl=useProxy?proxy+encodeURIComponent(url):url;
+        const res=await fetch(fetchUrl);
+        if(!res.ok) throw "";
+        const data=await res.json();
+        if(!data.apps||!Array.isArray(data.apps)) throw "";
+        return data;
+      }catch{return null}
+    }
+
+    function renderRepoCard(repoData,repoUrl,useProxy=true,isUserRepo=true){
+      const first=repoData.apps[0]||{};
+      const icon=repoData.iconURL||first.iconURL||"";
+      const name=repoData.name||first.name||"Unnamed Repo";
+      const desc = repoData.description || first.subtitle || first.localizedDescription || "";
+      const div=document.createElement("div");
+      div.className="repo-card fade-in";
+      div.dataset.url=repoUrl;
+      div.innerHTML=`
+        <img src="${icon}">
+        <div class="repo-info">
+          <div class="repo-name">${name}</div>
+          <div class="repo-desc">${desc}</div>
+        </div>
+        <div class="repo-actions">
+          <button class="openBtn" data-url="${repoUrl}" data-use-proxy="${useProxy}">Open</button>
+          <button class="copyBtn" data-url="${repoUrl}">Copy URL</button>
+          ${isUserRepo?`<button class="removeBtn">Remove</button>`:""}
+        </div>`;
+
+      if(isUserRepo){
+        userReposArea.prepend(div);
+      }else{
+        defaultReposArea.prepend(div);
+      }
+      updateSectionTitles();
+    }
+
+    async function openRepo(url,useProxy){
+      viewingRepoUrl = url;
+      viewingRepoName = null;
+      searchInput.value = "";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
+      userReposArea.style.display="none";
+      defaultReposArea.style.display="none";
+      userReposTitle.style.display="none";
+      defaultReposTitle.style.display="none";
+
+      backBtn.style.display="block";
+
+      appsArea.innerHTML="";
+      for(let i=0;i<10;i++){
+        const s=document.createElement("div");
+        s.className="skeleton fade-in";
+        appsArea.appendChild(s);
+      }
+      try{
+        const fetchUrl=useProxy?proxy+encodeURIComponent(url):url;
+        const res=await fetch(fetchUrl);
+        const repo=await res.json();
+
+        // NEW: remember repo name so app cards can show "Developer: <repo name>" when viewing a repo
+        viewingRepoName = repo.name || null;
+
+        const apps=repo.apps||[];
+        currentApps=apps;
+        applySearch();
+        window.onscroll=()=> {
+          if(window.innerHeight+window.scrollY>=document.body.offsetHeight) {
+            if(loaded<filteredApps.length) renderNextBatch();
+          }
+        };
+      }catch{
+        appsArea.innerHTML=`<div class="loading-line">Error loading repo.</div>`;
+      }
+    }
+
+    function renderNextBatch() {
+      const batchSize = 20;
+      const nextApps = filteredApps.slice(loaded, loaded + batchSize);
+      renderApps(nextApps, loaded > 0);
+      loaded += nextApps.length;
+    }
+
+    function applySearch() {
+      const q = searchInput.value.toLowerCase();
+      const appsToFilter = viewingRepoUrl ? currentApps : allAppsIndex;
+
+      if (!q) {
+        if (!viewingRepoUrl) {
+          userReposArea.style.display = "";
+          defaultReposArea.style.display = "";
+          updateSectionTitles();
+
+          appsArea.innerHTML = "";
+          filteredApps = [];
+          loaded = 0;
+          window.onscroll = null;
+          backBtn.style.display = "none";
+          return;
+        }
+        filteredApps = appsToFilter.slice();
+        loaded = 0;
+        appsArea.innerHTML = "";
+        renderNextBatch();
+        return;
+      }
+
+      if (!viewingRepoUrl) {
+        userReposArea.style.display = "none";
+        defaultReposArea.style.display = "none";
+        userReposTitle.style.display = "none";
+        defaultReposTitle.style.display = "none";
+      }
+
+      filteredApps = appsToFilter.filter(app => app.name && app.name.toLowerCase().includes(q));
+
+      loaded = 0;
+      appsArea.innerHTML = "";
+      renderNextBatch();
+
+      window.onscroll = () => {
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+          if (loaded < filteredApps.length) renderNextBatch();
+        }
+      };
+    }
+
+    let searchTimeout;
+    searchInput.addEventListener("input", () => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(applySearch, 250);
+    });
+
+    function renderApps(apps, append = false) {
+      if (!apps || apps.length === 0) {
+        if (!append) appsArea.innerHTML = `<div class="loading-line">No apps found.</div>`;
+        return;
+      }
+      if (!append) appsArea.innerHTML = "";
+
+      const showDev = !!viewingRepoUrl && !!viewingRepoName;
+
+      apps.forEach((app, i) => {
+        const latest = (app.versions && app.versions.length) ? app.versions[0] : {};
+        const version = latest.version || app.version || "";
+        const desc = app.subtitle || app.localizedDescription || latest.localizedDescription || "";
+        const downloadURL = app.downloadURL || latest.downloadURL || "#";
+        const sizeBytes = latest.size || app.size || 0;
+        let sizeText = "Unknown";
+        if (sizeBytes > 1024*1024) sizeText = (sizeBytes/(1024*1024)).toFixed(2)+" MB";
+        else if (sizeBytes > 1024) sizeText = (sizeBytes/1024).toFixed(2)+" KB";
+        else if (sizeBytes > 0) sizeText = sizeBytes+" B";
+
+        // Global search uses __repoName; viewing repo shows developer line instead.
+        const repoNameHtml = (!viewingRepoUrl && app.__repoName)
+          ? `<div class="repo-meta">From: ${app.__repoName}</div>`
+          : "";
+
+        const devHtml = (showDev)
+          ? `<div class="dev-meta">Developer: ${viewingRepoName}</div>`
+          : "";
+
+        const card = document.createElement("div");
+        card.className = "card fade-in";
+        card.style.animationDelay = (Math.min(i, 10) * 14) + "ms";
+        card.innerHTML = `
+          <div class="icon"><img loading="lazy" src="${app.iconURL || ''}" alt=""></div>
+          <div class="title">${app.name || ""}</div>
+          <div class="meta">
+            ${version ? `<span class="version">v${version}</span>` : ""}
+            <span class="size">${sizeText}</span>
+          </div>
+          ${repoNameHtml}
+          ${devHtml}
+          <div class="subtitle">${desc}</div>
+          <a class="download" href="${downloadURL}" target="_blank" rel="noopener">Download</a>
+        `;
+        appsArea.appendChild(card);
+      });
+    }
+
+    function onRepoAreaClick(e){
+      const btnOpen=e.target.closest(".openBtn");
+      if(btnOpen) return openRepo(btnOpen.dataset.url, btnOpen.dataset.useProxy==="true");
+
+      const btnCopy=e.target.closest(".copyBtn");
+      if(btnCopy) return navigator.clipboard.writeText(btnCopy.dataset.url)
+        .then(()=>showToast("Copied URL"))
+        .catch(()=>alert("Copy failed"));
+
+      const btnRemove=e.target.closest(".removeBtn");
+      if(btnRemove){
+        const card=btnRemove.closest(".repo-card");
+        removeUserRepo(card.dataset.url);
+        card.remove();
+        updateSectionTitles();
+        showToast("Repo removed");
+      }
+    }
+    userReposArea.addEventListener("click", onRepoAreaClick);
+    defaultReposArea.addEventListener("click", onRepoAreaClick);
+
+    backBtn.addEventListener("click",()=>{
+      viewingRepoUrl=null;
+      viewingRepoName=null;
+      appsArea.innerHTML="";
+
+      userReposArea.style.display="";
+      defaultReposArea.style.display="";
+      updateSectionTitles();
+
+      backBtn.style.display="none";
+      window.onscroll=null;
+      filteredApps = [];
+      loaded = 0;
+    });
+
+    function indexRepoApps(repo) {
+      if (!repo.apps || !Array.isArray(repo.apps)) return;
+      repo.apps.forEach(app => {
+        allAppsIndex.push({
+          ...app,
+          __repoName: repo.name || "Repo"
+        });
+      });
+    }
+
+    const importModal = document.createElement("div");
+    importModal.id = "importModal";
+    importModal.style.cssText = `
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+    `;
+
+    importModal.innerHTML = `
+      <div class="box fade-in" style="
+        background: linear-gradient(180deg, rgba(28,28,32,0.92), rgba(28,28,32,0.80));
+        padding: 20px;
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+        display: flex;
+        gap: 10px;
+        width: min(90%, 360px);
+        border: 1px solid rgba(255,255,255,0.10);
+      ">
+        <input id="importModalInput" type="url"
+          placeholder="Paste repo JSON URL…"
+          style="
+            flex:1;
+            padding:12px;
+            border-radius:12px;
+            border:1px solid rgba(255,255,255,0.10);
+            background:rgba(255,255,255,0.04);
+            color:var(--text);
+            outline:none;
+          ">
+        <button id="importModalBtn"
+          style="
+            padding:12px 16px;
+            border-radius:12px;
+            border:1px solid rgba(255,255,255,0.10);
+            background:var(--accent);
+            color:#fff;
+            font-weight:900;
+            cursor:pointer;
+            box-shadow: 0 10px 22px rgba(10,132,255,0.14);
+          ">
+          Import
+        </button>
+      </div>
+    `;
+    document.body.appendChild(importModal);
+
+    const importModalInput = document.getElementById("importModalInput");
+    const importModalBtn = document.getElementById("importModalBtn");
+
+    importModalBtn.addEventListener("click", async () => {
+      const url = importModalInput.value.trim();
+      if (!url) return;
+      showToast("Importing repo…");
+      let repo = await fetchUserRepo(url);
+      let useProxy = false;
+      if (!repo) {
+        repo = await fetchUserRepo(url, true);
+        useProxy = true;
+      }
+      if (!repo) {
+        showToast("Invalid repo", 2000);
+        return;
+      }
+      renderRepoCard(repo, url, useProxy, true);
+      saveUserRepo({ url, useProxy });
+
+      indexRepoApps(repo);
+
+      importModalInput.value = "";
+      importModal.style.display = "none";
+      showToast("Repo imported!");
+    });
+
+    importBtn.addEventListener("click", () => {
+      importModal.style.display = "flex";
+      importModalInput.focus();
+    });
+
+    importModal.addEventListener("click", e => {
+      if (e.target === importModal) {
+        importModal.style.display = "none";
+      }
+    });
+
+    window.addEventListener("keydown", e => {
+      if (e.key === "Escape") {
+        importModal.style.display = "none";
+      }
+    });
+
+    loadRepos().then(() => {
+      (async () => {
+        for (const r of getUserRepos()) {
+          const repo = await fetchUserRepo(r.url, r.useProxy);
+          if (repo) {
+            renderRepoCard(repo, r.url, r.useProxy, true);
+            indexRepoApps(repo);
+          }
+        }
+        updateSectionTitles();
+      })();
+    });
+  </script>
+</body>
+</html>
