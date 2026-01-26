@@ -606,7 +606,7 @@
 
     let currentApps = [];
     let viewingRepoUrl = null;
-    let viewingRepoName = null; // NEW: used to show developer name line only when viewing/opening repo
+    let viewingRepoName = null; // kept, but no longer used for developer display
     let allAppsIndex = [];
     let filteredApps = [];
     let loaded = 0;
@@ -765,7 +765,6 @@
         const res=await fetch(fetchUrl);
         const repo=await res.json();
 
-        // NEW: remember repo name so app cards can show "Developer: <repo name>" when viewing a repo
         viewingRepoName = repo.name || null;
 
         const apps=repo.apps||[];
@@ -838,14 +837,25 @@
       searchTimeout = setTimeout(applySearch, 250);
     });
 
+    // FIX: show the actual app developer field from repo JSON (tries common keys)
+    function getAppDeveloper(app, latest) {
+      return (
+        app.developerName ||
+        app.developer ||
+        app.developer_name ||
+        app.author ||
+        app.publisher ||
+        (latest && (latest.developerName || latest.developer || latest.author || latest.publisher)) ||
+        ""
+      );
+    }
+
     function renderApps(apps, append = false) {
       if (!apps || apps.length === 0) {
         if (!append) appsArea.innerHTML = `<div class="loading-line">No apps found.</div>`;
         return;
       }
       if (!append) appsArea.innerHTML = "";
-
-      const showDev = !!viewingRepoUrl && !!viewingRepoName;
 
       apps.forEach((app, i) => {
         const latest = (app.versions && app.versions.length) ? app.versions[0] : {};
@@ -858,13 +868,13 @@
         else if (sizeBytes > 1024) sizeText = (sizeBytes/1024).toFixed(2)+" KB";
         else if (sizeBytes > 0) sizeText = sizeBytes+" B";
 
-        // Global search uses __repoName; viewing repo shows developer line instead.
         const repoNameHtml = (!viewingRepoUrl && app.__repoName)
           ? `<div class="repo-meta">From: ${app.__repoName}</div>`
           : "";
 
-        const devHtml = (showDev)
-          ? `<div class="dev-meta">Developer: ${viewingRepoName}</div>`
+        const developer = viewingRepoUrl ? getAppDeveloper(app, latest) : "";
+        const devHtml = (viewingRepoUrl && developer)
+          ? `<div class="dev-meta">Developer: ${developer}</div>`
           : "";
 
         const card = document.createElement("div");
