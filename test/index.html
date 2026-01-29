@@ -1006,8 +1006,8 @@
         const sizeBytes = Number(latest.size || app.size || 0);
         let sizeText = "Unknown";
         if (Number.isFinite(sizeBytes) && sizeBytes > 0) {
-          if (sizeBytes > 1024*1024) sizeText = (sizeBytes/(1024*1024)).toFixed(2)+" MB";
-          else if (sizeBytes > 1024) sizeText = (sizeBytes/1024).toFixed(2)+" KB";
+          if (sizeBytes > 1000*1000) sizeText = (sizeBytes/(1000*1000)).toFixed(2)+" MB";
+          else if (sizeBytes > 1000) sizeText = (sizeBytes/1000).toFixed(2)+" KB";
           else sizeText = sizeBytes+" B";
         }
 
